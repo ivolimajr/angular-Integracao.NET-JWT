@@ -5,7 +5,7 @@ import {takeUntil} from 'rxjs/operators';
 import {FuseMediaWatcherService} from '@fuse/services/media-watcher';
 import {FuseNavigationService, FuseVerticalNavigationComponent} from '@fuse/components/navigation';
 import {InitialData} from 'app/app.types';
-import {UserService} from "../../../../shared/services/usuario/user.service";
+import {AuthService} from '../../../../shared/services/auth/auth.service';
 
 @Component({
     selector: 'classy-layout',
@@ -22,7 +22,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
         private _router: Router,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _fuseNavigationService: FuseNavigationService,
-        private _userService: UserService
+        private _authService: AuthService
     ) {
     }
 
@@ -38,7 +38,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
         this._activatedRoute.data.subscribe((data: Data) => {
             this.data = data.initialData;
         });
-        this.data.user = this._userService.getUserStorage();
+        this.data.user = this._authService.getUserInfoFromStorage();
 
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$

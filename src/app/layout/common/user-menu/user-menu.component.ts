@@ -11,7 +11,7 @@ import {Router} from '@angular/router';
 import {BooleanInput} from '@angular/cdk/coercion';
 import {Subject} from 'rxjs';
 import {Usuario} from 'app/shared/models/usuario.model';
-import {UserService} from 'app/shared/services/usuario/user.service';
+import {AuthService} from '../../../shared/services/auth/auth.service';
 
 @Component({
     selector: 'user-menu',
@@ -36,7 +36,7 @@ export class UserMenuComponent implements OnInit, OnDestroy {
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _router: Router,
-        private _userService: UserService
+        private _authService: AuthService
     ) {
     }
 
@@ -49,7 +49,7 @@ export class UserMenuComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         // Subscribe to user changes
-        this.user = this._userService.getUserStorage();
+        this._authService.user$.subscribe((res)=>this.user = res);
     }
 
     /**

@@ -11,10 +11,9 @@ import {MatDrawer} from '@angular/material/sidenav';
 import {Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {FuseMediaWatcherService} from '@fuse/services/media-watcher';
-import {UserService} from '../../shared/services/usuario/user.service';
 import {EdrivingService} from '../../shared/services/http/edriving.service';
 import {EdrivingUsuario} from '../../shared/models/edriving.module';
-import {Usuario} from '../../shared/models/usuario.model';
+import {AuthService} from '../../shared/services/auth/auth.service';
 
 @Component({
     selector: 'app-perfil',
@@ -30,25 +29,53 @@ export class PerfilComponent implements OnInit, OnDestroy {
     panels: any[] = [];
     selectedPanel: string = 'dadosPessoais';
 
-    usuarioStorage: Usuario;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
-    usuarioEdriving$: Observable<EdrivingUsuario>;
+    edrivingUser$: Observable<EdrivingUsuario>;
 
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
-        private _userService: UserService,
+        private _authService: AuthService,
         private _edrivingServices: EdrivingService
     ) {
-
     }
 
-    /**
-     * On init
-     */
     ngOnInit(): void {
-        this.preparaUsuario();
-        // Setup available panels
+        this.loadUser();
+        this.loadPanel();
+        this.mediaChanges();
+    }
+
+    ngOnDestroy(): void {
+        // Unsubscribe from all subscriptions
+        this._unsubscribeAll.next();
+        this._unsubscribeAll.complete();
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // Usuario
+    // -----------------------------------------------------------------------------------------------------
+
+    /**
+     * Carrega o usuário para edição dos dados
+     * É um condicional para exibir o formulário, dependendo do nível de acesso é renderizado um componente.
+     *
+     * @private
+     */
+    private loadUser(): void {
+        this._authService.user$.subscribe((res) => {
+            if (res.nivelAcesso >= 10 && res.nivelAcesso < 20) {
+                this.edrivingUser$ = this._edrivingServices.getOne(res.id);
+            }
+        });
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+    // Comportamento do painel
+    // -----------------------------------------------------------------------------------------------------
+
+    //Carrega os dados do painel
+    loadPanel(): void {
         this.panels = [
             {
                 id: 'dadosPessoais',
@@ -69,8 +96,10 @@ export class PerfilComponent implements OnInit, OnDestroy {
                 description: 'Mantenha seu endereço sempre atualizado'
             },
         ];
+    }
 
-        // Subscribe to media changes
+    //Altera entre a sobreposição do painel esquerdo com direito, sobrepoe ou escurece.
+    mediaChanges(): void {
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(({matchingAliases}) => {
@@ -89,24 +118,10 @@ export class PerfilComponent implements OnInit, OnDestroy {
             });
     }
 
-
     /**
-     * On destroy
-     */
-    ngOnDestroy(): void {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next();
-        this._unsubscribeAll.complete();
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Navigate to the panel
+     * Navega entre os paineis
      *
-     * @param panel
+     * @param id do painel
      */
     goToPanel(panel: string): void {
         this.selectedPanel = panel;
@@ -118,24 +133,12 @@ export class PerfilComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Get the details of the panel
+     * Busca as informações do Painel
      *
-     * @param id
+     * @param id do painel
      */
     getPanelInfo(id: string): any {
         return this.panels.find(panel => panel.id === id);
-    }
-
-    preparaUsuario(): void {
-        this.usuarioStorage = this._userService.getUserStorage();
-        if (this.usuarioStorage.nivelAcesso >= 10 && this.usuarioStorage.nivelAcesso < 20) {
-            this.buscaUsuario(this.usuarioStorage.id);
-        }
-
-    }
-
-    private buscaUsuario(id: number): void {
-        this.usuarioEdriving$ = this._edrivingServices.getOne(id);
     }
 
     /**

@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {fuseAnimations} from '@fuse/animations';
 import {AuthService} from 'app/shared/services/auth/auth.service';
-import {UserService} from 'app/shared/services/usuario/user.service';
 import {FuseAlertType} from '@fuse/components/alert';
 
 @Component({
@@ -32,7 +31,6 @@ export class AuthUnlockSessionComponent implements OnInit {
         private _authService: AuthService,
         private _formBuilder: FormBuilder,
         private _router: Router,
-        private _userService: UserService
     ) {
     }
 
@@ -45,7 +43,7 @@ export class AuthUnlockSessionComponent implements OnInit {
      */
     ngOnInit(): void {
         // Get the user's name
-        this._userService.user$.subscribe((user) => {
+        this._authService.user$.subscribe((user) => {
             this.name = user.nome;
             this._email = user.email;
         });

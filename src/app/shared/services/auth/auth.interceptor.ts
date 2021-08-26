@@ -14,9 +14,9 @@ export class AuthInterceptor implements HttpInterceptor {
         // Clone the request object
         let newReq = req.clone();
 
-        if (this._authService.accessToken && !AuthUtils.isTokenExpired(this._authService.accessToken)) {
+        if (this._authService.tokenFromLocalStorage && !AuthUtils.isTokenExpired(this._authService.tokenFromLocalStorage)) {
             newReq = req.clone({
-                headers: req.headers.set('Authorization', 'Bearer ' + this._authService.accessToken)
+                headers: req.headers.set('Authorization', 'Bearer ' + this._authService.tokenFromLocalStorage)
             });
         }
 

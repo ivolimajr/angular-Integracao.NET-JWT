@@ -79,7 +79,7 @@
                     <ng-container [ngSwitch]="selectedPanel">
                         <!-- Account -->
                         <ng-container *ngSwitchCase="'dadosPessoais'">
-                            <ng-container *ngIf="usuarioEdriving$ | async as usuario; else loading">
+                            <ng-container *ngIf="edrivingUser$ | async as usuario; else loading">
                                 <app-edriving [usuarioEdriving]="usuario"></app-edriving>
                             </ng-container>
                             <ng-template #loading>

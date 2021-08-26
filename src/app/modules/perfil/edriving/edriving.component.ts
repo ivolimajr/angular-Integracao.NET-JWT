@@ -1,12 +1,14 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {EdrivingPost, EdrivingUsuario} from '../../../shared/models/edriving.module';
-import {UserService} from '../../../shared/services/usuario/user.service';
+import {UserService} from '../../../shared/services/http/user.service';
 import {EdrivingService} from '../../../shared/services/http/edriving.service';
 import {fuseAnimations} from '@fuse/animations';
 import {FuseAlertType} from '@fuse/components/alert';
-import {UsuarioService} from '../../../shared/services/http/usuario.service';
-import {BehaviorSubject} from 'rxjs';
+import {Usuario} from '../../../shared/models/usuario.model';
+import {AuthService} from '../../../shared/services/auth/auth.service';
+import {LocalStorageService} from "../../../shared/services/storage/localStorage.service";
+import {environment} from "../../../../environments/environment";
 
 @Component({
     selector: 'app-edriving',
@@ -16,49 +18,48 @@ import {BehaviorSubject} from 'rxjs';
     animations: fuseAnimations
 })
 export class EdrivingComponent implements OnInit {
-
+    @Input() usuarioEdriving: EdrivingUsuario;
     alert: { type: FuseAlertType; message: string } = {
         type: 'error',
         message: ''
     };
 
     accountForm: FormGroup;
+    user: Usuario;
     showAlert: boolean = false;
-    @Input() usuarioEdriving: EdrivingUsuario;
     private usuarioEdrivingPost = new EdrivingPost();
-    usuarioSub: BehaviorSubject<EdrivingUsuario> = new BehaviorSubject<EdrivingUsuario>(new EdrivingUsuario());
 
     constructor(
         private _formBuilder: FormBuilder,
         private _userService: UserService,
+        private _authServices: AuthService,
         private _edrivingServices: EdrivingService,
         private _changeDetectorRef: ChangeDetectorRef,
-        private _usuarioServices: UsuarioService,
+        private _usuarioServices: UserService,
+        private _storageService: LocalStorageService
     ) {
 
     }
 
     ngOnInit(): void {
         this.preparaFormulario();
-        this.usuarioSub.next(this.usuarioEdriving);
-        const phoneNumbersFormArray = this.accountForm.get('telefones') as FormArray;
-        console.log(phoneNumbersFormArray.length);
     }
 
     atualizar(): void {
         if (this.preparaEnvioFormulario() === false) {
             return null;
         }
+
         this._edrivingServices.update(this.usuarioEdrivingPost).subscribe((res) => {
-            console.log(res);
-            this.alert.type = 'success';
-            this.alert.message = 'Atualizado.';
-            this.showAlert = true;
+
             this.usuarioEdriving = res;
-            this.usuarioSub.next(res);
 
-            let last = res.telefones[res.telefones.length - 1];
+            this.user = this._authServices.getUserInfoFromStorage();
+            this.user.nome = res.nome;
+            this.user.email = res.email;
+            this._storageService.setValueFromLocalStorage(environment.authStorage, this.user);
 
+            const last = res.telefones[res.telefones.length - 1];
             const phoneNumberFormGroup = this._formBuilder.group({
                 id: [last.id],
                 telefone: [last.telefone]
@@ -66,9 +67,11 @@ export class EdrivingComponent implements OnInit {
 
             // Adiciona o formGroup ao array de telefones
             (this.accountForm.get('telefones') as FormArray).push(phoneNumberFormGroup);
-
+            this.alert.type = 'success';
+            this.alert.message = 'Atualizado.';
+            this.showAlert = true;
             this._changeDetectorRef.markForCheck();
-        })
+        });
     }
 
     addPhoneNumberField(): void {
@@ -87,7 +90,7 @@ export class EdrivingComponent implements OnInit {
     }
 
     removePhoneNumber(id: number, index: number): void {
-        this._usuarioServices.deleteTelefone(id)
+        this._usuarioServices.removePhonenumber(id)
             .subscribe((res) => {
                 if (!res) {
                     this.alert.type = 'error';
@@ -97,8 +100,8 @@ export class EdrivingComponent implements OnInit {
                 const phoneNumbersFormArray = this.accountForm.get('telefones') as FormArray;
                 // Remove the phone number field
                 phoneNumbersFormArray.removeAt(index);
-                this._changeDetectorRef.markForCheck()
-            })
+                this._changeDetectorRef.markForCheck();
+            });
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -177,10 +180,10 @@ export class EdrivingComponent implements OnInit {
             this.alert.message = 'Dados Inválidos.';
             this.showAlert = true;
             const formData = this.accountForm.value;
-            console.log(formData.telefones)
+            console.log(formData.telefones);
             formData.telefones.forEach((res) => {
-                console.log(res.telefone.length)
-            })
+                console.log(res.telefone.length);
+            });
 
             return false;
         }

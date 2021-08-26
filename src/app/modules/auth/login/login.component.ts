@@ -5,7 +5,6 @@ import {fuseAnimations} from '@fuse/animations';
 import {FuseAlertType} from '@fuse/components/alert';
 import {AuthService} from 'app/shared/services/auth/auth.service';
 import {Usuario} from 'app/shared/models/usuario.model';
-import {UserService} from "../../../shared/services/usuario/user.service";
 
 @Component({
     selector: 'login',
@@ -29,7 +28,6 @@ export class LoginComponent implements OnInit {
         private _formBuilder: FormBuilder,
         private _activatedRoute: ActivatedRoute,
         private _authService: AuthService,
-        private _userService: UserService,
         private _router: Router
     ) {
     }
@@ -40,11 +38,12 @@ export class LoginComponent implements OnInit {
 
     /**
      * Prepara o formulário de login com validadores básicos
+     *
      * @private
      * @return void
      */
     private prepareForm(): void {
-        this.userStorage = this._userService.getDataFromStorage();
+        this.userStorage = this._authService.getLoginFromStorage();
         //Se tiver um usuário no storage já é setado o email
         if (this.userStorage) {
             this.loginForm = this._formBuilder.group({
@@ -85,29 +84,30 @@ export class LoginComponent implements OnInit {
 
     /**
      *Valida os dados novamente antes de enviar para API
+     *
      * @private
      * @return boolean
      */
     private prepareCustomer(): boolean {
         const formData = this.loginForm.value;
         //Se o email estiver vazio retorna error
-        if (formData.email == '') {
+        if (formData.email === '') {
             this.alert.type = 'error';
-            this.alert.message = 'Dados inválidos'
+            this.alert.message = 'Dados inválidos';
             this.showAlert = true;
             return false;
         }
         //Se a senha estiver vazia retorna error
-        if (formData.password == '') {
+        if (formData.password === '') {
             this.alert.type = 'error';
-            this.alert.message = 'Dados inválidos'
+            this.alert.message = 'Dados inválidos';
             this.showAlert = true;
             return false;
         }
         //Se a senha estiver preenchia e for menor que 5 retorna error
-        if (formData.password != '' && formData.password.length < 5) {
+        if (formData.password !== '' && formData.password.length < 5) {
             this.alert.type = 'error';
-            this.alert.message = 'Dados inválidos'
+            this.alert.message = 'Dados inválidos';
             this.showAlert = true;
             return false;
         }
@@ -117,24 +117,25 @@ export class LoginComponent implements OnInit {
 
     /**
      * Fazer Login na plataforma
+     *
      * @return void
      */
     signIn(): void {
         //Não faz a requisição se os dados forem inválidos
-        if (!this.prepareCustomer()) return;
+        if (!this.prepareCustomer()) {return;}
 
         //Desabilita o form
-        this.loginForm.disable()
+        this.loginForm.disable();
         //Remove o alerta
         this.showAlert = false;
 
         //Faz Login
         this._authService.signIn(this.loginForm.value).subscribe((val) => {
             if (val.ok != null && !val.ok) {
-                this.alert.type = 'error'
-                this.alert.message = val.error.detail
-                this.showAlert = true
-                this.loginForm.enable()
+                this.alert.type = 'error';
+                this.alert.message = val.error.detail;
+                this.showAlert = true;
+                this.loginForm.enable();
                 return;
             }
             const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/signed-in-redirect';

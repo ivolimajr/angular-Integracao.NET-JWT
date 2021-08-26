@@ -15,14 +15,15 @@ export class AppComponent {
     /**
      * Busca um token para autenticar à API
      * Se não tiver um token no STORAGE, o método busca um token na API
+     *
      * @private
      * return: void
      */
     private getToken(): void {
-        if (!this._authService.accessToken) {
-            this._authService.getToken()
+        if (!this._authService.tokenFromLocalStorage) {
+            this._authService.getApiTokenFromApi()
                 .subscribe((s: TokenResult) => {
-                    this._authService.accessToken = s.accessToken;
+                    this._authService.tokenFromLocalStorage = s.accessToken;
                 });
         }
     }

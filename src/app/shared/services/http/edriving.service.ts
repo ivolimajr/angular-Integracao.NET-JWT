@@ -16,6 +16,12 @@ export class EdrivingService {
     constructor(private _httpClient: HttpClient) {
     }
 
+    /**
+     * Recupera um usuário do Edriving
+     *
+     * @param id do usuário a ser consultado
+     * @return retorna um usuário ou o error
+     */
     getOne(id: number): Observable<EdrivingUsuario> {
 
         return this._httpClient.get<EdrivingUsuario>(URL_EDRIVING_URL + '/' + id).pipe(
@@ -27,6 +33,13 @@ export class EdrivingService {
         );
     }
 
+    /**
+     * Atualiza um usuário do edriving
+     * Verifica se o id a ser passao é zero, se for, retorna error.
+     *
+     * @param data model do usuario
+     * @return retorna o usuário atualizado ou error
+     */
     update(data: EdrivingPost): Observable<EdrivingUsuario> {
         if (data.id === 0 || data.id == null) {
             return of(null);
@@ -34,9 +47,7 @@ export class EdrivingService {
 
         return this._httpClient.put(URL_EDRIVING_URL, data).pipe(
             switchMap((response: any) => of(response)),
-            catchError((e) => {
-                return of(e);
-            })
+            catchError(e => of(e))
         );
     }
 }
