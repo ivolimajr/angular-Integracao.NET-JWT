@@ -38,13 +38,10 @@ export class LoginComponent implements OnInit {
         this.prepareForm();
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Formulário de login
-    // -----------------------------------------------------------------------------------------------------
-
     /**
      * Prepara o formulário de login com validadores básicos
      * @private
+     * @return void
      */
     private prepareForm(): void {
         this.userStorage = this._userService.getDataFromStorage();
@@ -58,7 +55,7 @@ export class LoginComponent implements OnInit {
                         Validators.minLength(5),
                         Validators.maxLength(70)]
                     )],
-                password: ['Pay@2021',
+                password: ['Pay@202',
                     Validators.compose([
                         Validators.required,
                         Validators.nullValidator,
@@ -75,7 +72,7 @@ export class LoginComponent implements OnInit {
                         Validators.minLength(5),
                         Validators.maxLength(70)]
                     )],
-                password: ['Pay@2021',
+                password: ['Pay@202',
                     Validators.compose([
                         Validators.required,
                         Validators.nullValidator,
@@ -87,71 +84,61 @@ export class LoginComponent implements OnInit {
     }
 
     /**
-     *Valida os dados novamente para enviar para API
+     *Valida os dados novamente antes de enviar para API
      * @private
+     * @return boolean
      */
     private prepareCustomer(): boolean {
         const formData = this.loginForm.value;
+        //Se o email estiver vazio retorna error
         if (formData.email == '') {
             this.alert.type = 'error';
             this.alert.message = 'Dados inválidos'
             this.showAlert = true;
             return false;
         }
+        //Se a senha estiver vazia retorna error
         if (formData.password == '') {
             this.alert.type = 'error';
             this.alert.message = 'Dados inválidos'
             this.showAlert = true;
             return false;
         }
+        //Se a senha estiver preenchia e for menor que 5 retorna error
         if (formData.password != '' && formData.password.length < 5) {
             this.alert.type = 'error';
             this.alert.message = 'Dados inválidos'
             this.showAlert = true;
             return false;
         }
+
         return true;
     }
 
-    // -----------------------------------------------------------------------------------------------------
-    // @ Método de Login
-    // -----------------------------------------------------------------------------------------------------
-
     /**
-     * Método para fazer Login na plataforma
-     * Sign in
+     * Fazer Login na plataforma
+     * @return void
      */
     signIn(): void {
-        //Nem vai pra API se os dados forem inválidos
-        if (!this.prepareCustomer()) {
-            return;
-        }
+        //Não faz a requisição se os dados forem inválidos
+        if (!this.prepareCustomer()) return;
 
         //Desabilita o form
-        this.loginForm.disable();
-
+        this.loginForm.disable()
         //Remove o alerta
         this.showAlert = false;
 
         //Faz Login
-        this._authService.signIn(this.loginForm.value)
-            .subscribe(
-                () => {
-                    const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/signed-in-redirect';
-                    this._router.navigateByUrl(redirectURL);
-                },
-                (response) => {
-
-                    //Reativa o formulário
-                    this.loginForm.enable();
-
-                    //Emite um alerta
-                    this.alert = {
-                        type: 'error',
-                        message: 'Wrong email or password'
-                    };
-                    this.showAlert = true;
-                }
-            );
+        this._authService.signIn(this.loginForm.value).subscribe((val) => {
+            if (val.ok != null && !val.ok) {
+                this.alert.type = 'error'
+                this.alert.message = val.error.detail
+                this.showAlert = true
+                this.loginForm.enable()
+                return;
+            }
+            const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/signed-in-redirect';
+            this._router.navigateByUrl(redirectURL);
+        });
     }
 }

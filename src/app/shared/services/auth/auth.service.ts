@@ -81,8 +81,7 @@ export class AuthService {
 
         return this._httpClient.post(API_LOGIN_URL, credentials).pipe(
             switchMap((response: any) => {
-
-                //Defini os atributos de login e senha para salvar no Storage para verificações.
+                //Define os atributos de login e senha para salvar no Storage para verificações.
                 this.userLogin.email = credentials.email;
                 this.userLogin.password = credentials.password;
 
@@ -93,15 +92,14 @@ export class AuthService {
                 //Define autenticado
                 this._authenticated = true;
 
-                //Defini o userState
+                //Definie o userState
                 this._userService.user = response.user;
 
                 // Retorna um novo observable com a resposta
                 return of(response);
             }),
             catchError((e) => {
-                console.log(e)
-                return of(false)
+                return of(e)
             })
         );
     }

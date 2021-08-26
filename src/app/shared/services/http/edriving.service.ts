@@ -35,7 +35,6 @@ export class EdrivingService {
         return this._httpClient.put(URL_EDRIVING_URL, data).pipe(
             switchMap((response: any) => of(response)),
             catchError((e) => {
-                console.log(e.error);
                 return of(e);
             })
         );
