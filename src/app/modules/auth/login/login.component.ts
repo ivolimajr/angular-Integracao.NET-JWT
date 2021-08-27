@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
                         Validators.minLength(5),
                         Validators.maxLength(70)]
                     )],
-                password: ['Pay@202',
+                password: ['Pay@2021',
                     Validators.compose([
                         Validators.required,
                         Validators.nullValidator,
@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
                         Validators.minLength(5),
                         Validators.maxLength(70)]
                     )],
-                password: ['Pay@202',
+                password: ['Pay@2021',
                     Validators.compose([
                         Validators.required,
                         Validators.nullValidator,

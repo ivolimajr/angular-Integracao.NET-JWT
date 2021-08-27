@@ -80,7 +80,7 @@
                         <!-- Account -->
                         <ng-container *ngSwitchCase="'dadosPessoais'">
                             <ng-container *ngIf="edrivingUser$ | async as usuario; else loading">
-                                <app-edriving [usuarioEdriving]="usuario"></app-edriving>
+                                <app-edriving [EdrivingUser]="usuario"></app-edriving>
                             </ng-container>
                             <ng-template #loading>
                                 <div class="row col-xs-12 col-sm-12 col-md-12 col-lg-12" align="center">
@@ -94,7 +94,7 @@
                         </ng-container>
                         <!-- Security -->
                         <ng-container *ngSwitchCase="'seguranca'">
-                            <altera-senha></altera-senha>
+                            <altera-senha [idUser]="idUser"></altera-senha>
                         </ng-container>
                         <!-- Plan & Billing -->
                         <ng-container *ngSwitchCase="'endereco'">

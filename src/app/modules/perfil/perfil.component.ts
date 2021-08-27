@@ -31,6 +31,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
     edrivingUser$: Observable<EdrivingUsuario>;
+    idUser: number;
 
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
@@ -42,7 +43,6 @@ export class PerfilComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.loadUser();
-        this.loadPanel();
         this.mediaChanges();
     }
 
@@ -50,6 +50,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
+        this._changeDetectorRef.markForCheck();
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -65,7 +66,10 @@ export class PerfilComponent implements OnInit, OnDestroy {
     private loadUser(): void {
         this._authService.user$.subscribe((res) => {
             if (res.nivelAcesso >= 10 && res.nivelAcesso < 20) {
+                this.loadPanelA();
                 this.edrivingUser$ = this._edrivingServices.getOne(res.id);
+                this.edrivingUser$.subscribe((res)=>this.idUser=res.usuarioId);
+                this._changeDetectorRef.markForCheck();
             }
         });
     }
@@ -74,8 +78,27 @@ export class PerfilComponent implements OnInit, OnDestroy {
     // Comportamento do painel
     // -----------------------------------------------------------------------------------------------------
 
-    //Carrega os dados do painel
-    loadPanel(): void {
+    //Carrega os dados do painel para usuários do Edriving
+    loadPanelA(): void {
+        this.panels = [
+            {
+                id: 'dadosPessoais',
+                icon: 'heroicons_outline:user-circle',
+                title: 'Dados Pessoais',
+                description: 'Gerencie seus dados pessoais'
+            },
+            {
+                id: 'seguranca',
+                icon: 'heroicons_outline:lock-closed',
+                title: 'Segurança',
+                description: 'Mantenha sua conta protegida.'
+            }
+        ];
+        this._changeDetectorRef.markForCheck();
+    }
+
+    //Carrega os dados do painel com Endereço, para Auto Escola
+    loadPanelB(): void {
         this.panels = [
             {
                 id: 'dadosPessoais',
@@ -96,6 +119,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
                 description: 'Mantenha seu endereço sempre atualizado'
             },
         ];
+        this._changeDetectorRef.markForCheck();
     }
 
     //Altera entre a sobreposição do painel esquerdo com direito, sobrepoe ou escurece.
@@ -130,6 +154,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
         if (this.drawerMode === 'over') {
             this.drawer.close();
         }
+        this._changeDetectorRef.markForCheck();
     }
 
     /**
@@ -139,6 +164,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
      */
     getPanelInfo(id: string): any {
         return this.panels.find(panel => panel.id === id);
+        this._changeDetectorRef.markForCheck();
     }
 
     /**

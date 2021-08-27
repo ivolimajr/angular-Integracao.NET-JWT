@@ -94,6 +94,7 @@ export class AuthService {
     signOut(): Observable<boolean> {
         this.storageServices.removeFromStorage(environment.dataStorage);
         this.storageServices.removeFromStorage(environment.authStorage);
+        console.log("Deslogando");
         this._authenticated = false;
 
         return of(true);
@@ -181,7 +182,7 @@ export class AuthService {
      * @param model de Usuario
      */
     set user(value: Usuario) {
-        this.storageServices.setValueFromLocalStorage(environment.authStorage,value);
+        if (value) this.storageServices.setValueFromLocalStorage(environment.authStorage, value);
         this._user.next(value);
     }
 
@@ -189,8 +190,8 @@ export class AuthService {
      * Retorna um observable do usuário logado
      */
     get user$(): Observable<Usuario> {
-        // this.userModel = this.getUserInfoFromStorage();
-        // this._user.next(this.userModel);
+        this.userModel = this.getUserInfoFromStorage();
+        this._user.next(this.userModel);
         return this._user.asObservable();
     }
 

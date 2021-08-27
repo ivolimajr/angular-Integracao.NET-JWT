@@ -28,4 +28,20 @@ export class UserService {
             catchError(e => of(e.error))
         );
     }
+    /**
+     * Atualiza a senha de qualquer usuário
+     *
+     * @param id do telefone a ser removido
+     * @return retorna um booleano ou error
+     */
+    updatePassById(credentials: { id: number; senhaAtual: string; novaSenha: string }): Observable<boolean> {
+        if (credentials.id === 0 || credentials.id == null) {return of(false);}
+
+        return this._httpClient.post(URL_USER_API + '/alterar-senha/',credentials).pipe(
+            switchMap((response: any) => of(response)),
+            catchError((e)=>{
+                return of(e);
+            })
+        );
+    }
 }

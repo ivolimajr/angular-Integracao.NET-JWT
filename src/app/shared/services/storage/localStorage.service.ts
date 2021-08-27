@@ -12,17 +12,20 @@ export class LocalStorageService {
 
     /**
      * inserir no localstorage um JSON do data criptografado
+     *
      * @param key
      * @param data
      * @return void
      */
     public setValueFromLocalStorage(key: string, data: any): void {
         localStorage.setItem(key, this.encrypt(JSON.stringify(data)));
+        // localStorage.setItem(key, JSON.stringify(data));
     }
 
     /**
      *  retorna do localstorage o data criptografado em forma de
      *  objeto buscando pela chave
+     *
      * @param key
      * @return retorna um JSON descriptografadoobjeto descriptografado
      */
@@ -32,10 +35,12 @@ export class LocalStorageService {
             return null;
         }
         return JSON.parse(this.decrypt(resultStorage));
+        // return JSON.parse(resultStorage);
     }
 
     /**
      * remove do localstorage a chave indicada
+     *
      * @param key
      * @return void
      */
@@ -45,6 +50,7 @@ export class LocalStorageService {
 
     /**
      * Encripta o valor passado por parametro
+     *
      * @param value
      * @private
      */
@@ -54,6 +60,7 @@ export class LocalStorageService {
 
     /**
      * decripa o valor passado por parametro
+     *
      * @param textToDecrypt
      * @private
      */
