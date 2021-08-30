@@ -133,7 +133,7 @@ export class LoginComponent implements OnInit {
         this._authService.signIn(this.loginForm.value).subscribe((val) => {
             if (val.ok != null && !val.ok) {
                 this.alert.type = 'error';
-                this.alert.message = val.error.detail;
+                this.alert.message = val.error;
                 this.showAlert = true;
                 this.loginForm.enable();
                 return;
