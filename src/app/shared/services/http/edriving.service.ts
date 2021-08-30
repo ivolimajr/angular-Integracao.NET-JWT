@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {EdrivingPost, EdrivingUsuario} from '../../models/edriving.module';
+import {EdrivingGetAll, EdrivingPost, EdrivingUsuario} from '../../models/edriving.module';
 import {Observable, of} from 'rxjs';
 import {environment} from '../../../../environments/environment';
-import {catchError, switchMap} from 'rxjs/operators';
+import {catchError, map, switchMap} from 'rxjs/operators';
 
 
 const URL_EDRIVING_URL = `${environment.apiUrl}/Edriving`;
@@ -26,6 +26,16 @@ export class EdrivingService {
 
         return this._httpClient.get<EdrivingUsuario>(URL_EDRIVING_URL + '/' + id).pipe(
             switchMap((response: any) => of(response)),
+            catchError((e) => {
+                console.log(e);
+                return of(e);
+            })
+        );
+    }
+
+    getAll(): Observable<EdrivingUsuario[]>{
+        return this._httpClient.get<EdrivingUsuario[]>(URL_EDRIVING_URL).pipe(
+            switchMap((response: EdrivingUsuario[]) =>of(response['items'])),
             catchError((e) => {
                 console.log(e);
                 return of(e);
