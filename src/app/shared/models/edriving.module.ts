@@ -1,7 +1,6 @@
 import {Cargo} from './cargo.model';
 import {Usuario} from './usuario.model';
 import {Telefone} from './Telefone.model';
-import {List} from 'lodash';
 
 export class EdrivingUsuario {
     id: number;

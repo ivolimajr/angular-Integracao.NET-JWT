@@ -22,12 +22,15 @@ export class UserService {
      * @return retorna um booleano ou error
      */
     removePhonenumber(id: number): Observable<boolean> {
-        if (id === 0 || id == null) {return of(false);}
+        if (id === 0 || id == null) {
+            return of(false);
+        }
         return this._httpClient.delete(URL_USER_API + '/telefone/' + id).pipe(
             switchMap((response: any) => of(response)),
             catchError(e => of(e.error))
         );
     }
+
     /**
      * Atualiza a senha de qualquer usuário
      *
@@ -35,11 +38,13 @@ export class UserService {
      * @return retorna um booleano ou error
      */
     updatePassById(credentials: { id: number; senhaAtual: string; novaSenha: string }): Observable<boolean> {
-        if (credentials.id === 0 || credentials.id == null) {return of(false);}
+        if (credentials.id === 0 || credentials.id == null) {
+            return of(false);
+        }
 
-        return this._httpClient.post(URL_USER_API + '/alterar-senha/',credentials).pipe(
+        return this._httpClient.post(URL_USER_API + '/alterar-senha/', credentials).pipe(
             switchMap((response: any) => of(response)),
-            catchError((e)=>{
+            catchError((e) => {
                 return of(e);
             })
         );

@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {EdrivingPost, EdrivingUsuario} from '../../models/edriving.module';
 import {Observable, of} from 'rxjs';
 import {environment} from '../../../../environments/environment';
-import {catchError, map, switchMap} from 'rxjs/operators';
+import {catchError, switchMap} from 'rxjs/operators';
 
 
 const URL_EDRIVING_URL = `${environment.apiUrl}/Edriving`;
@@ -36,12 +36,10 @@ export class EdrivingService {
     /**
      * @return o array de items contendo todos os usuários do tipo Edriving
      */
-    getAll(): Observable<EdrivingUsuario[]>{
+    getAll(): Observable<EdrivingUsuario[]> {
         return this._httpClient.get<EdrivingUsuario[]>(URL_EDRIVING_URL).pipe(
-            switchMap((response: EdrivingUsuario[]) =>of(response['items'])),
-            catchError((e) => {
-                return of(e);
-            })
+            switchMap((response: EdrivingUsuario[]) => of(response['items'])),
+            catchError(e => of(e))
         );
     }
 
@@ -58,6 +56,24 @@ export class EdrivingService {
         }
 
         return this._httpClient.put(URL_EDRIVING_URL, data).pipe(
+            switchMap((response: any) => of(response)),
+            catchError(e => of(e))
+        );
+    }
+
+    /**
+     * Atualiza um usuário do edriving
+     * Verifica se o id a ser passao é zero, se for, retorna error.
+     *
+     * @param data model do usuario
+     * @return retorna o usuário atualizado ou error
+     */
+    delete(id: number): Observable<boolean> {
+        if (id === 0 || id == null) {
+            return of(null);
+        }
+
+        return this._httpClient.delete(URL_EDRIVING_URL + '/' + id).pipe(
             switchMap((response: any) => of(response)),
             catchError(e => of(e))
         );

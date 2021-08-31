@@ -10,11 +10,11 @@ export const defaultNavigation: FuseNavigationItem[] = [
         link: '/example'
     },
     {
-        id   : 'edriving',
+        id: 'edriving',
         title: 'Usuario da Plataforma',
-        type : 'basic',
-        icon : 'heroicons_outline:academic-cap',
-        link : '/usuario/edriving'
+        type: 'basic',
+        icon: 'heroicons_outline:academic-cap',
+        link: '/usuario/edriving'
     }
 ];
 export const compactNavigation: FuseNavigationItem[] = [
@@ -26,11 +26,11 @@ export const compactNavigation: FuseNavigationItem[] = [
         link: '/example'
     },
     {
-        id   : 'edriving',
+        id: 'edriving',
         title: 'Usuario da Plataforma',
-        type : 'basic',
-        icon : 'heroicons_outline:academic-cap',
-        link : '/usuario/edriving'
+        type: 'basic',
+        icon: 'heroicons_outline:academic-cap',
+        link: '/usuario/edriving'
     }
 ];
 export const futuristicNavigation: FuseNavigationItem[] = [
@@ -42,11 +42,11 @@ export const futuristicNavigation: FuseNavigationItem[] = [
         link: '/example'
     },
     {
-        id   : 'edriving',
+        id: 'edriving',
         title: 'Usuario da Plataforma',
-        type : 'basic',
-        icon : 'heroicons_outline:academic-cap',
-        link : '/usuario/edriving'
+        type: 'basic',
+        icon: 'heroicons_outline:academic-cap',
+        link: '/usuario/edriving'
     }
 ];
 export const horizontalNavigation: FuseNavigationItem[] = [
@@ -58,10 +58,10 @@ export const horizontalNavigation: FuseNavigationItem[] = [
         link: '/example'
     },
     {
-        id   : 'edriving',
+        id: 'edriving',
         title: 'Usuario da Plataforma',
-        type : 'basic',
-        icon : 'heroicons_outline:academic-cap',
-        link : '/usuario/edriving'
+        type: 'basic',
+        icon: 'heroicons_outline:academic-cap',
+        link: '/usuario/edriving'
     }
 ];

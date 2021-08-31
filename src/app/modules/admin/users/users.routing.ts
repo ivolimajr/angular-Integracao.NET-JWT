@@ -1,4 +1,4 @@
-import { EdrivingComponent } from './edriving/edriving.component';
+import {EdrivingComponent} from './edriving/edriving.component';
 import {Route} from "@angular/router";
 
 

@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../../shared/services/auth/auth.service';
-import {Usuario, UsuarioLogin} from '../../../shared/models/usuario.model';
+import {UsuarioLogin} from '../../../shared/models/usuario.model';
 import {FuseAlertType} from '../../../../@fuse/components/alert';
 import {fuseAnimations} from '../../../../@fuse/animations';
 import {UserService} from '../../../shared/services/http/user.service';
@@ -88,7 +88,7 @@ export class AlteraSenhaComponent implements OnInit {
 
             this.loginUser.email = this._authServices.getUserInfoFromStorage().email;
             this.loginUser.password = formData.currentPassword;
-            this.localStorage.setValueFromLocalStorage(environment.dataStorage,this.loginUser);
+            this.localStorage.setValueFromLocalStorage(environment.dataStorage, this.loginUser);
 
             this._changeDetectorRef.markForCheck();
             return;

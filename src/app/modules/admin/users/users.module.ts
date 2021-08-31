@@ -14,16 +14,21 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import { EdrivingFormModalComponent } from './edriving/edriving-form-modal/edriving-form-modal.component';
+import {EdrivingFormModalComponent} from './edriving/edriving-form-modal/edriving-form-modal.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatPaginatorModule} from '@angular/material/paginator';
-import {MatSortModule} from "@angular/material/sort";
+import {MatSortModule} from '@angular/material/sort';
+import {MatInputModule} from '@angular/material/input';
+import {FuseAlertModule} from '../../../../@fuse/components/alert';
+import { MatDialogModule } from '@angular/material/dialog';
+import { DeleteModalComponent } from './edriving/delete-modal/delete-modal.component';
 
 
 @NgModule({
     declarations: [
         EdrivingComponent,
-        EdrivingFormModalComponent
+        EdrivingFormModalComponent,
+        DeleteModalComponent
     ],
     imports: [
         RouterModule.forChild(UsersRouting),
@@ -41,8 +46,11 @@ import {MatSortModule} from "@angular/material/sort";
         SharedModule,
         MatProgressSpinnerModule,
         MatTableModule,
+        MatInputModule,
         MatPaginatorModule,
-        MatSortModule
+        MatSortModule,
+        FuseAlertModule,
+        MatDialogModule
     ]
 })
 export class UsersModule {

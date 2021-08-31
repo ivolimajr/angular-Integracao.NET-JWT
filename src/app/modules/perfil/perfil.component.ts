@@ -73,7 +73,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
                 //carrega o painel A
                 this.loadPanelA();
                 //Set o id do usuário para alterar a senha
-                this.edrivingUser$.subscribe((res)=>this.idUser=res.usuarioId);
+                this.edrivingUser$.subscribe((res) => this.idUser = res.usuarioId);
                 this._changeDetectorRef.markForCheck();
             }
         });

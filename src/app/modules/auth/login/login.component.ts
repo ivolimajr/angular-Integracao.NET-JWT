@@ -122,7 +122,9 @@ export class LoginComponent implements OnInit {
      */
     signIn(): void {
         //Não faz a requisição se os dados forem inválidos
-        if (!this.prepareCustomer()) {return;}
+        if (!this.prepareCustomer()) {
+            return;
+        }
 
         //Desabilita o form
         this.loginForm.disable();

@@ -2,7 +2,6 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    Input,
     OnDestroy,
     OnInit,
     ViewEncapsulation
@@ -48,7 +47,7 @@ export class UserMenuComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         // Subscribe to user changes
-        this._authService.user$.subscribe((res)=>this.user = res);
+        this._authService.user$.subscribe((res) => this.user = res);
     }
 
     /**

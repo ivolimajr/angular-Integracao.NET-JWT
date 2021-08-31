@@ -44,7 +44,7 @@ export class LocalStorageService {
      * @param key
      * @return void
      */
-    public removeFromStorage(key: string): void{
+    public removeFromStorage(key: string): void {
         localStorage.removeItem(key);
     }
 
