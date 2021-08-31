@@ -25,7 +25,6 @@ export class UserMenuComponent implements OnInit, OnDestroy {
     static ngAcceptInputType_showAvatar: BooleanInput;
     /* eslint-enable @typescript-eslint/naming-convention */
 
-    @Input() showAvatar: boolean = true;
     user: Usuario;
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();

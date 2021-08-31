@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {EdrivingGetAll, EdrivingPost, EdrivingUsuario} from '../../models/edriving.module';
+import {EdrivingPost, EdrivingUsuario} from '../../models/edriving.module';
 import {Observable, of} from 'rxjs';
 import {environment} from '../../../../environments/environment';
 import {catchError, map, switchMap} from 'rxjs/operators';
@@ -33,11 +33,13 @@ export class EdrivingService {
         );
     }
 
+    /**
+     * @return o array de items contendo todos os usuários do tipo Edriving
+     */
     getAll(): Observable<EdrivingUsuario[]>{
         return this._httpClient.get<EdrivingUsuario[]>(URL_EDRIVING_URL).pipe(
             switchMap((response: EdrivingUsuario[]) =>of(response['items'])),
             catchError((e) => {
-                console.log(e);
                 return of(e);
             })
         );

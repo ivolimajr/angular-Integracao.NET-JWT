@@ -64,10 +64,15 @@ export class PerfilComponent implements OnInit, OnDestroy {
      * @private
      */
     private loadUser(): void {
+        //pega os dados do usuário que estão no localstorage
         this._authService.user$.subscribe((res) => {
+            //verifica se o usuário tem perfil de edriving - perfil que gerencia a plataforma
             if (res.nivelAcesso >= 10 && res.nivelAcesso < 20) {
-                this.loadPanelA();
+                //busca o usuário na API
                 this.edrivingUser$ = this._edrivingServices.getOne(res.id);
+                //carrega o painel A
+                this.loadPanelA();
+                //Set o id do usuário para alterar a senha
                 this.edrivingUser$.subscribe((res)=>this.idUser=res.usuarioId);
                 this._changeDetectorRef.markForCheck();
             }
