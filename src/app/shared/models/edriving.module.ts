@@ -15,7 +15,7 @@ export class EdrivingUsuario {
 }
 
 export class EdrivingPost {
-    id: number;
+    id?: number;
     nome: string;
     cpf: string;
     email: string;

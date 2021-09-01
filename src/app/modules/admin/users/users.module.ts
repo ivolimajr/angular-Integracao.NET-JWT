@@ -22,6 +22,7 @@ import {MatInputModule} from '@angular/material/input';
 import {FuseAlertModule} from '../../../../@fuse/components/alert';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DeleteModalComponent } from './edriving/delete-modal/delete-modal.component';
+import {MatSelectModule} from "@angular/material/select";
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import { DeleteModalComponent } from './edriving/delete-modal/delete-modal.compo
         MatPaginatorModule,
         MatSortModule,
         FuseAlertModule,
-        MatDialogModule
+        MatDialogModule,
+        MatSelectModule
     ]
 })
 export class UsersModule {

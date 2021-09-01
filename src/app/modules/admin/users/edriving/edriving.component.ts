@@ -55,10 +55,15 @@ export class EdrivingComponent implements AfterViewInit, OnInit {
     }
 
     creteUser(): void {
+        this.showAlert = false;
         const dialogRef = this.dialog.open(EdrivingFormModalComponent);
 
         dialogRef.afterClosed().subscribe((result) => {
-            console.log(`Dialog result: ${result}`);
+            if(result){
+                this.dataSource.data = [...this.dataSource.data,result];
+                this.setAlert('Inserido','success');
+                this._changeDetectorRef.detectChanges();
+            }
         });
     }
 
@@ -92,7 +97,6 @@ export class EdrivingComponent implements AfterViewInit, OnInit {
 
     private deleteFromApi(id: number): void {
         this._edrivingServices.delete(id).subscribe((res)=>{
-            console.log(res);
             if(res){
                 this.setAlert('Removido', 'success');
                 this.getUsers();

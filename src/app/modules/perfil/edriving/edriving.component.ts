@@ -7,8 +7,8 @@ import {fuseAnimations} from '@fuse/animations';
 import {FuseAlertType} from '@fuse/components/alert';
 import {Usuario} from '../../../shared/models/usuario.model';
 import {AuthService} from '../../../shared/services/auth/auth.service';
-import {LocalStorageService} from "../../../shared/services/storage/localStorage.service";
-import {environment} from "../../../../environments/environment";
+import {LocalStorageService} from '../../../shared/services/storage/localStorage.service';
+import {environment} from '../../../../environments/environment';
 
 @Component({
     selector: 'app-edriving',
@@ -18,7 +18,7 @@ import {environment} from "../../../../environments/environment";
     animations: fuseAnimations
 })
 export class EdrivingComponent implements OnInit {
-    @Input() EdrivingUser: EdrivingUsuario;
+    @Input() edrivingUser: EdrivingUsuario;
     alert: { type: FuseAlertType; message: string } = {
         type: 'error',
         message: ''
@@ -27,7 +27,7 @@ export class EdrivingComponent implements OnInit {
     accountForm: FormGroup;
     user: Usuario;
     showAlert: boolean = false;
-    private EdrivingUserPost = new EdrivingPost();
+    private edrivingUserPost = new EdrivingPost();
 
     constructor(
         private _formBuilder: FormBuilder,
@@ -47,6 +47,7 @@ export class EdrivingComponent implements OnInit {
 
     /**
      * Atualiza o usuário do tipo Edriving
+     *
      * @return void
      */
     update(): void {
@@ -55,9 +56,9 @@ export class EdrivingComponent implements OnInit {
             return null;
         }
 
-        this._edrivingServices.update(this.EdrivingUserPost).subscribe((res) => {
+        this._edrivingServices.update(this.edrivingUserPost).subscribe((res) => {
             //Set o edrivingUser com os dados atualizados
-            this.EdrivingUser = res;
+            this.edrivingUser = res;
 
             //Atualiza os dados do localStorage
             this.user = this._authServices.getUserInfoFromStorage();
@@ -85,6 +86,7 @@ export class EdrivingComponent implements OnInit {
 
     /**
      * Adiciona mais um campo no formulário de contato
+     *
      * @return void
      */
     addPhoneNumberField(): void {
@@ -104,6 +106,7 @@ export class EdrivingComponent implements OnInit {
 
     /**
      * Remove um telefone do formulário de contato e do banco de dados
+     *
      * @param id do telefone a ser removido
      * @param index do array de telefones a ser removido
      */
@@ -128,25 +131,26 @@ export class EdrivingComponent implements OnInit {
 
     /**
      * monta o formulário com os validadores
+     *
      * @return void
      * @private
      */
     private prepareForm(): void {
         this.accountForm = this._formBuilder.group({
-            nome: [this.EdrivingUser.nome,
+            nome: [this.edrivingUser.nome,
                 Validators.compose([
                     Validators.required,
                     Validators.nullValidator,
                     Validators.minLength(5),
                     Validators.maxLength(100)]
                 )],
-            cpf: [this.EdrivingUser.cpf,
+            cpf: [this.edrivingUser.cpf,
                 Validators.compose([
                     Validators.required,
                     Validators.nullValidator,
                     Validators.minLength(11),
                     Validators.maxLength(11)])],
-            email: [this.EdrivingUser.email,
+            email: [this.edrivingUser.email,
                 Validators.compose([
                     Validators.required,
                     Validators.nullValidator,
@@ -162,9 +166,9 @@ export class EdrivingComponent implements OnInit {
         const phoneNumbersFormGroups = [];
 
         //Só monta o array de telefones se houver telefones de contato cadastrado
-        if (this.EdrivingUser.telefones.length > 0) {
+        if (this.edrivingUser.telefones.length > 0) {
             // Iterate through them
-            this.EdrivingUser.telefones.forEach((phoneNumber) => {
+            this.edrivingUser.telefones.forEach((phoneNumber) => {
 
                 //Cria um formGroup de telefone
                 phoneNumbersFormGroups.push(
@@ -190,7 +194,7 @@ export class EdrivingComponent implements OnInit {
         });
 
         //Define o ID do usuário Edriving a ser atualizado
-        this.EdrivingUserPost.id = this.EdrivingUser.id;
+        this.edrivingUserPost.id = this.edrivingUser.id;
         this._changeDetectorRef.markForCheck();
     }
 
@@ -200,6 +204,7 @@ export class EdrivingComponent implements OnInit {
 
     /**
      * Valida os dados vindo do formulário antes de enviar para API
+     *
      * @private
      * @return um boleano
      */
@@ -213,10 +218,10 @@ export class EdrivingComponent implements OnInit {
         }
         //Se todos os dados forem válidos, monta o objeto para atualizar
         const formData = this.accountForm.value;
-        this.EdrivingUserPost.nome = formData.nome;
-        this.EdrivingUserPost.email = formData.email;
-        this.EdrivingUserPost.cpf = formData.cpf;
-        this.EdrivingUserPost.telefones = formData.telefones;
+        this.edrivingUserPost.nome = formData.nome;
+        this.edrivingUserPost.email = formData.email;
+        this.edrivingUserPost.cpf = formData.cpf;
+        this.edrivingUserPost.telefones = formData.telefones;
 
         return true;
     }
