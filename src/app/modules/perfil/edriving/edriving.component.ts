@@ -27,6 +27,8 @@ export class EdrivingComponent implements OnInit {
     accountForm: FormGroup;
     user: Usuario;
     showAlert: boolean = false;
+    apiError: boolean = false;
+    apiErrorMessage: string = '';
     private edrivingUserPost = new EdrivingPost();
 
     constructor(
@@ -56,8 +58,16 @@ export class EdrivingComponent implements OnInit {
             return null;
         }
 
-        this._edrivingServices.update(this.edrivingUserPost).subscribe((res) => {
+        this._edrivingServices.update(this.edrivingUserPost).subscribe((res: any) => {
             //Set o edrivingUser com os dados atualizados
+            console.log(res);
+            if(res.error){
+                this.showAlert = false;
+                this.apiError = true;
+                this.apiErrorMessage = res.error;
+                this._changeDetectorRef.markForCheck();
+                return;
+            }
             this.edrivingUser = res;
 
             //Atualiza os dados do localStorage
@@ -67,21 +77,35 @@ export class EdrivingComponent implements OnInit {
             this._storageServices.setValueFromLocalStorage(environment.authStorage, this.user);
 
             //Atualiza o útlimo registro do formulário de contato com o ID do telefone atualizado
-            const last = res.telefones[res.telefones.length - 1];
-            const phoneNumberFormGroup = this._formBuilder.group({
-                id: [last.id],
-                telefone: [last.telefone]
-            });
 
-            // Adiciona o formGroup ao array de telefones
-            (this.accountForm.get('telefones') as FormArray).push(phoneNumberFormGroup);
+            //Pega o último registro de telefone que veio do usuario atualizado
+            const lastPhoneIdFromUser = res.telefones[res.telefones.length - 1];
+
+            //Pega o último registro de telefone que contem no array de telefones
+            const lastPhoneFromPhoneArray = this.accountForm.get('telefones') as FormArray;
+
+            //Se os IDS forem diferentes, incluir no array
+            if (lastPhoneIdFromUser.id !== lastPhoneFromPhoneArray.value[lastPhoneFromPhoneArray.length - 1].id) {
+
+                const lastFromArray = lastPhoneFromPhoneArray[lastPhoneFromPhoneArray.length - 1];
+                // Remove the phone number field
+                lastPhoneFromPhoneArray.removeAt(lastFromArray);
+
+                const phoneNumberFormGroup = this._formBuilder.group({
+                    id: [lastPhoneIdFromUser.id],
+                    telefone: [lastPhoneIdFromUser.telefone]
+                });
+
+                // Adiciona o formGroup ao array de telefones
+                (this.accountForm.get('telefones') as FormArray).push(phoneNumberFormGroup);
+            }
 
             //Retorna a mensagem de atualizado
-            this.alert.type = 'success';
-            this.alert.message = 'Atualizado.';
-            this.showAlert = true;
+            this.setAlert('Atualizado.','success');
+
             this._changeDetectorRef.markForCheck();
         });
+
     }
 
     /**
@@ -114,9 +138,7 @@ export class EdrivingComponent implements OnInit {
         this._userServices.removePhonenumber(id)
             .subscribe((res) => {
                 if (!res) {
-                    this.alert.type = 'error';
-                    this.alert.message = 'Telefone já em uso';
-                    this.showAlert = true;
+                    this.setAlert('Telefone já em uso');
                 }
                 const phoneNumbersFormArray = this.accountForm.get('telefones') as FormArray;
                 // Remove the phone number field
@@ -211,9 +233,7 @@ export class EdrivingComponent implements OnInit {
     private checkFormToSend(): boolean {
 
         if (this.accountForm.invalid) {
-            this.alert.type = 'error';
-            this.alert.message = 'Dados Inválidos.';
-            this.showAlert = true;
+            this.setAlert('Dados Inválidos');
             return false;
         }
         //Se todos os dados forem válidos, monta o objeto para atualizar
@@ -224,5 +244,11 @@ export class EdrivingComponent implements OnInit {
         this.edrivingUserPost.telefones = formData.telefones;
 
         return true;
+    }
+    private setAlert(message: string, type: any = 'error'): void{
+        this.showAlert = false;
+        this.alert.type = type;
+        this.alert.message = message;
+        this.showAlert = true;
     }
 }
