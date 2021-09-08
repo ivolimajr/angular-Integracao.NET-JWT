@@ -1,0 +1,32 @@
+<div class="text-center text-lg" mat-dialog-title>{{data.title}}</div>
+<div mat-dialog-content class="text-center">
+    <p *ngIf="data.content">{{data.content}}</p>
+</div>
+<div mat-dialog-actions>
+    <!--renderiza apenas um botão-->
+    <ng-container *ngIf="data.oneButton === true; else twoButtons">
+        <button
+            class="ml-1 items-center fuse-mat-button-large w-full"
+            mat-button
+            [mat-dialog-close]="true"
+            cdkFocusInitial
+            [color]="'primary'">
+            Ok
+        </button>
+    </ng-container>
+    <ng-template #twoButtons>
+        <div class="grid grid justify-center gap-4">
+            <div class="col-start-3 ">
+                <div>
+                    <button mat-button color="warn" (click)="onNoClick()">Cancelar</button>
+                    <button mat-button color="primary" [mat-dialog-close]="true" cdkFocusInitial>OK</button>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-row justify-between">
+            <div>
+
+            </div>
+        </div>
+    </ng-template>
+</div>
